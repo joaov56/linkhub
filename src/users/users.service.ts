@@ -5,7 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
-import { hash } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
+import { hash, compare } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,30 @@ export class UsersService {
       ...createUserDto,
       password: hashedPass,
     });
+  }
+
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ user: User; token: string } | null> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return null;
+    }
+
+    const isValid = await compare(password, user.password);
+
+    if (!isValid) {
+      return null;
+    }
+
+    const token = await sign({ user }, 'secret', { expiresIn: '1d' });
+
+    return {
+      user,
+      token,
+    };
   }
 
   findOne(id: string): Promise<User | null> {

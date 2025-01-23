@@ -33,6 +33,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Post('login')
+  async login(@Body() { email, password }) {
+    return await this.usersService.login(email, password);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
