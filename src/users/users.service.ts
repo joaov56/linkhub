@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
 
 @Injectable()
@@ -46,6 +46,18 @@ export class UsersService {
       user,
       token,
     };
+  }
+
+  async checkToken(token: string) {
+    try {
+      const splited = token.split('Bearer ')[1];
+
+      const decoded = await verify(splited, 'secret');
+
+      return decoded.user;
+    } catch (error) {
+      return {};
+    }
   }
 
   findOne(id: string): Promise<User | null> {

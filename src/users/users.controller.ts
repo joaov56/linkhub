@@ -8,6 +8,7 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -36,6 +37,17 @@ export class UsersController {
   @Post('login')
   async login(@Body() { email, password }) {
     return await this.usersService.login(email, password);
+  }
+
+  @Get('checkToken')
+  async checkToken(@Headers() headers: { authorization: string }) {
+    const user = await this.usersService.checkToken(headers.authorization);
+
+    if (!user.id) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+
+    return user;
   }
 
   @Get(':id')
