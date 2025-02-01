@@ -10,9 +10,10 @@ import {
   HttpStatus,
   Headers,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from '../../users.service';
+import { CreateUserDto } from '../../dto/create-user.dto';
+import { UpdateUserDto } from '../../dto/update-user.dto';
+import { LoginDto } from '../../dto/login.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,7 +36,7 @@ export class UsersController {
   }
 
   @Post('login')
-  async login(@Body() { email, password }) {
+  async login(@Body() { email, password }: LoginDto) {
     return await this.usersService.login(email, password);
   }
 
