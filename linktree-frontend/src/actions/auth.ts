@@ -60,16 +60,9 @@ export async function register(prevState: RegisterState | null, formData: FormDa
         lastName: validatedFields.data.name?.toString().split(" ")[1],
         email: validatedFields.data.email,
         password: validatedFields.data.password,
-      })
-  } catch (error) {
-    console.log(error);
-    
-  }
-
-
-  try {
+    })
     return {
-      message: "Registration successful! You can now login.",
+      message: "successful",
     }
   } catch (error) {
     console.log(error);

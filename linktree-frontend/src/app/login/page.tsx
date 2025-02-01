@@ -5,17 +5,38 @@ import { Input } from "@/components/ui/input"
 import axios from "axios"
 import { Leaf } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [usersExists, setUserExists] = useState<boolean>(false);
+
+  const router = useRouter()
 
   async function verifyUser(){
-    const {data} = await axios.post('http://localhost:4000/users/verifyUser', {
+    const { data } = await axios.post('http://localhost:4000/users/verifyUser', {
       email,
     })
 
-    console.log(data); 
+    if(data.exists){
+      setUserExists(true)
+      return
+    }
+
+    router.push('/register')
+  }
+
+  async function login(){
+    const { data } = await axios.post('http://localhost:4000/users/login', {
+      email,
+      password
+    })
+
+    if(data){
+      localStorage.setItem('token', data.token)
+    }
   }
 
   return (
@@ -43,10 +64,21 @@ export default function LoginPage() {
               onChange={(e)=> setEmail(e.target.value)}
             />
           </div>
-          <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={verifyUser}>Continue</Button>
+          {usersExists && (
+            <div className="space-y-2">
+            <Input
+              id="password"
+              placeholder="Password"
+              type="password"
+              autoCorrect="off"
+              onChange={(e)=> setPassword(e.target.value)}
+              />
+            </div>
+          )}
+
+          <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={usersExists ? login : verifyUser}>Continue</Button>
         </div>
 
-        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />

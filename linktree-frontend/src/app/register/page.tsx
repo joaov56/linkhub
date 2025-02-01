@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { register } from "@/actions/auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+
+import { useRouter } from "next/navigation"
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -21,6 +23,14 @@ function SubmitButton() {
 
 export default function Register() {
   const [state, formAction] = useActionState(register, null)
+
+  const router = useRouter();
+
+  useEffect(()=> {
+    if(state?.message === 'successful'){
+      router.push('/login')
+    }
+  },[state?.message, router])
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -48,13 +58,7 @@ export default function Register() {
           <p className="text-gray-500">Enter your details to sign up for LinkHub</p>
         </div>
 
-        <form action={formAction} className="space-y-4">
-          {state?.message && (
-            <Alert className="bg-green-50 text-green-600">
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
-          
+        <form action={formAction} className="space-y-4">          
           {state?.errors?._form && (
             <Alert variant="destructive">
               <AlertDescription>{state.errors._form}</AlertDescription>
