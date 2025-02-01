@@ -39,6 +39,12 @@ export class UsersController {
     return await this.usersService.login(email, password);
   }
 
+  @Post('verifyUser')
+  async verifyUser(@Body() { email }) {
+    const user = await this.usersService.findByEmail(email);
+    return { exists: !!user };
+  }
+
   @Get('checkToken')
   async checkToken(@Headers() headers: { authorization: string }) {
     const user = await this.usersService.checkToken(headers.authorization);
