@@ -1,5 +1,5 @@
 'use client'
-
+import { parseCookies, setCookie } from 'nookies'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import axios from "axios"
@@ -35,7 +35,14 @@ export default function LoginPage() {
     })
 
     if(data){
-      localStorage.setItem('token', data.token)
+      const cookies = parseCookies()
+      console.log({ cookies })
+    
+      // Set
+      setCookie(null, 'token', data.token, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      })
     }
   }
 
