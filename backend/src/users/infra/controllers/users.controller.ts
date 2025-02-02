@@ -8,6 +8,7 @@ import {
   HttpException,
   HttpStatus,
   Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UpdateUserDto } from '../../dto/update-user.dto';
@@ -18,6 +19,7 @@ import { CheckTokenUseCase } from 'src/users/app/use-cases/check-token';
 import { FindByEmailOrUsernameUseCase } from 'src/users/app/use-cases/find-by-email-or-username';
 import { UpdateUserUseCase } from 'src/users/app/use-cases/update';
 import { FindByIdUseCase } from 'src/users/app/use-cases/find-by-id';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -60,6 +62,7 @@ export class UsersController {
     return { exists: !!user };
   }
 
+  @UseGuards(AuthGuard)
   @Get('checkToken')
   async checkToken(@Headers() headers: { authorization: string }) {
     const user = await this.checkTokenUseCase.execute(headers.authorization);
@@ -71,11 +74,13 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.findByIdUseCase.execute(id);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.updateUserUseCase.execute(id, updateUserDto);

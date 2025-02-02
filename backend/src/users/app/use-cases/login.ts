@@ -3,13 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { compare } from 'bcrypt';
 import { User } from 'src/users/domain/user.entity';
 import { Repository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
+
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async execute(
@@ -28,7 +30,7 @@ export class LoginUseCase {
       return null;
     }
 
-    const token = await sign({ user }, 'secret', { expiresIn: '1d' });
+    const token = await this.jwtService.signAsync({ user });
 
     return {
       user,
