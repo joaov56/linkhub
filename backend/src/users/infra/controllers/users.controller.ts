@@ -5,19 +5,30 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   HttpException,
   HttpStatus,
   Headers,
 } from '@nestjs/common';
-import { UsersService } from '../../users.service';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UpdateUserDto } from '../../dto/update-user.dto';
 import { LoginDto } from '../../dto/login.dto';
+import { CreateUserUseCase } from 'src/users/app/use-cases/create-user';
+import { LoginUseCase } from 'src/users/app/use-cases/login';
+import { CheckTokenUseCase } from 'src/users/app/use-cases/check-token';
+import { FindByEmailOrUsernameUseCase } from 'src/users/app/use-cases/find-by-email-or-username';
+import { UpdateUserUseCase } from 'src/users/app/use-cases/update';
+import { FindByIdUseCase } from 'src/users/app/use-cases/find-by-id';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly loginUseCase: LoginUseCase,
+    private readonly checkTokenUseCase: CheckTokenUseCase,
+    private readonly findByEmailOrUsernameUseCase: FindByEmailOrUsernameUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
+    private readonly findByIdUseCase: FindByIdUseCase,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -32,23 +43,26 @@ export class UsersController {
       );
     }
 
-    return this.usersService.create(createUserDto);
+    return this.createUserUseCase.execute(createUserDto);
   }
 
   @Post('login')
   async login(@Body() { email, password }: LoginDto) {
-    return await this.usersService.login(email, password);
+    return await this.loginUseCase.execute(email, password);
   }
 
   @Post('verifyUser')
-  async verifyUser(@Body() { email }) {
-    const user = await this.usersService.findByEmail(email);
+  async verifyUser(@Body() { email, username }) {
+    const user = await this.findByEmailOrUsernameUseCase.execute(
+      email,
+      username,
+    );
     return { exists: !!user };
   }
 
   @Get('checkToken')
   async checkToken(@Headers() headers: { authorization: string }) {
-    const user = await this.usersService.checkToken(headers.authorization);
+    const user = await this.checkTokenUseCase.execute(headers.authorization);
 
     if (!user.id) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
@@ -59,16 +73,11 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.findByIdUseCase.execute(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.updateUserUseCase.execute(id, updateUserDto);
   }
 }
