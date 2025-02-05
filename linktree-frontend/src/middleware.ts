@@ -34,9 +34,6 @@ export function middleware(request: NextRequest) {
   }
 
   if(authToken && !publicRoute){
-    // Checar se o jwt está expirado
-    // Se sim remover o cookie e redirecionar o usuário para o login
-
     return NextResponse.next();
   }
   
