@@ -21,12 +21,9 @@ export class Link {
   @Column()
   icon: string;
 
-  @JoinColumn({
-    name: 'userId',
-    referencedColumnName: 'id',
-  })
   @OneToOne(() => User, { nullable: false })
-  userId: string;
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  user: User;
 
   @Column({ default: true })
   isActive: boolean;

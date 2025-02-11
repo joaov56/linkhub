@@ -9,8 +9,8 @@ import { LinksModule } from './links/links.module';
 @Module({
   imports: [
     DatabaseModule,
-    UsersModule,
     LinksModule,
+    UsersModule,
     JwtModule.register({
       global: true,
       secret: 'test',

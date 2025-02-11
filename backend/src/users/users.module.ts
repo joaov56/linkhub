@@ -21,5 +21,6 @@ import { FindByIdUseCase } from './app/use-cases/find-by-id';
     UpdateUserUseCase,
     FindByIdUseCase,
   ],
+  exports: [FindByEmailOrUsernameUseCase],
 })
 export class UsersModule {}
