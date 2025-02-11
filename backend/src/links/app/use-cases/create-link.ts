@@ -13,11 +13,10 @@ export class CreateLinkUseCase {
   ) {}
 
   async execute(createLinkDto: CreateLinkDto, user: User): Promise<Link> {
-    console.log(user.id);
 
     return this.linksRepository.save({
       ...createLinkDto,
-      userId: user.id,
+      user: user,
     });
   }
 }

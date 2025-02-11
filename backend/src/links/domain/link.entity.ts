@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   OneToOne,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -21,7 +22,7 @@ export class Link {
   @Column()
   icon: string;
 
-  @OneToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 

@@ -10,9 +10,6 @@ export function middleware(request: NextRequest) {
   const publicRoute = publicRoutes.find((route) => route.path === path);
   const authToken = request.cookies.get('token')
 
-  console.log(request.cookies);
-  
-
   if(!authToken && publicRoute){
     return NextResponse.next()
   }

@@ -8,8 +8,8 @@ import Preview from "./components/Preview"
 
 interface Link {
   id: string
-  title: string
-  url: string
+  name: string
+  link: string
 }
 
 export default function Page() {

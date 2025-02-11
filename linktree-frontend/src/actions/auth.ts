@@ -29,9 +29,6 @@ export type RegisterState = {
 }
 
 export async function register(prevState: RegisterState | null, formData: FormData): Promise<RegisterState> {
-
-    console.log('oi');
-    
   const validatedFields = RegisterSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -46,12 +43,6 @@ export async function register(prevState: RegisterState | null, formData: FormDa
     }
   } 
 
-  console.log({
-    firstName: validatedFields.data.name?.toString().split(" ")[0],
-    lastName: validatedFields.data.name?.toString().split(" ")[1],
-    email: validatedFields.data.email,
-    password: validatedFields.data.password,
-  });
   
   try {
     await axios.post('http://localhost:4000/users', {

@@ -5,11 +5,13 @@ import { PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { linktreeApi } from "@/services/api"
+
 
 interface Link {
   id: string
-  title: string
-  url: string
+  name: string
+  link: string
 }
 
 interface LinkFormProps {
@@ -19,15 +21,19 @@ interface LinkFormProps {
 }
 
 export function LinkForm({ addLink, removeLink, links }: LinkFormProps) {
-  const [title, setTitle] = useState("")
-  const [url, setUrl] = useState("")
+  const [name, setName] = useState<string>("")
+  const [link, setLink] = useState<string>("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (title && url) {
-      addLink({ id: Date.now().toString(), title, url })
-      setTitle("")
-      setUrl("")
+    if (name && link) {
+      addLink({ id: Date.now().toString(), name, link })
+      const { data } = await linktreeApi.post('/links', {name, link, icon: ''})
+
+      console.log(data);
+      
+      setName("")
+      setLink("")
     }
   }
 
@@ -41,9 +47,9 @@ export function LinkForm({ addLink, removeLink, links }: LinkFormProps) {
               Link Title
             </Label>
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Enter link title"
               className="border-gray-200 focus:border-[#5D3891] focus:ring-[#C1FF72]"
             />
@@ -54,8 +60,8 @@ export function LinkForm({ addLink, removeLink, links }: LinkFormProps) {
             </Label>
             <Input
               id="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
               placeholder="https://"
               className="border-gray-200 focus:border-[#5D3891] focus:ring-[#C1FF72]"
             />
@@ -74,8 +80,8 @@ export function LinkForm({ addLink, removeLink, links }: LinkFormProps) {
             className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-[#C1FF72]"
           >
             <div>
-              <h3 className="font-medium text-[#5D3891]">{link.title}</h3>
-              <p className="text-sm text-gray-500">{link.url}</p>
+              <h3 className="font-medium text-[#5D3891]">{link.name}</h3>
+              <p className="text-sm text-gray-500">{link.link}</p>
             </div>
             <Button
               variant="ghost"
