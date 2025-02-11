@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Check, ChevronDown } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Check, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -29,8 +29,29 @@ export function BackgroundSelector({ selectedBg, setSelectedBg }: BackgroundSele
   ]
 
   const handleBackgroundChange = (bgId: string) => {
-    setSelectedBg(bgId)
+    const selectedBackground = backgrounds.find(bg => bg.id === bgId);
+    setSelectedBg(selectedBackground ? selectedBackground.class : '');
   }
+
+  useEffect(() => {
+    // Update the background when custom colors or pattern settings change
+    const updatedBackgrounds = [
+      { id: "solid", name: "Solid Color", class: `bg-[${customColor1}]` },
+      { id: "gradient", name: "Gradient", class: `bg-gradient-to-br from-[${customColor1}] to-[${customColor2}]` },
+      {
+        id: "pattern",
+        name: "Dot Pattern",
+        class: `bg-[${customColor1}] bg-opacity-95 bg-[radial-gradient(${patternColor}_1px,transparent_1px)] bg-[size:${patternSize}px_${patternSize}px]`,
+      },
+    ];
+    const currentBgId = backgrounds.find(bg => bg.class === selectedBg)?.id;
+    if (currentBgId) {
+      const updatedBg = updatedBackgrounds.find(bg => bg.id === currentBgId);
+      if (updatedBg) {
+        setSelectedBg(updatedBg.class);
+      }
+    }
+  }, [customColor1, customColor2, patternColor, patternSize, backgrounds, selectedBg, setSelectedBg]); 
 
   return (
     <div className="space-y-4">
@@ -41,10 +62,10 @@ export function BackgroundSelector({ selectedBg, setSelectedBg }: BackgroundSele
             key={bg.id}
             onClick={() => handleBackgroundChange(bg.id)}
             className={`${bg.class} relative h-24 rounded-lg border-2 transition-all ${
-              selectedBg === bg.id ? "border-[#C1FF72] ring-2 ring-[#C1FF72]/20" : "border-gray-200"
+              selectedBg === bg.class ? "border-[#C1FF72] ring-2 ring-[#C1FF72]/20" : "border-gray-200"
             }`}
           >
-            {selectedBg === bg.id && (
+            {selectedBg === bg.class && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/20">
                 <Check className="h-6 w-6 text-[#C1FF72]" />
               </div>
@@ -105,4 +126,3 @@ export function BackgroundSelector({ selectedBg, setSelectedBg }: BackgroundSele
     </div>
   )
 }
-

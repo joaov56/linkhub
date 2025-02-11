@@ -41,12 +41,12 @@ export default function Preview({ links, background }: PreviewProps) {
               <MoreVertical className="w-4 h-4 text-gray-500" />
             </button>
             <a
-              href={link.name}
+              href={link.link}
               target="_blank"
               rel="noopener noreferrer"
               className="block bg-white shadow-sm text-gray-800 rounded-md py-4 px-6 text-center font-medium hover:shadow-md transition-shadow relative"
             >
-              {link.link}
+              {link.name}
             </a>
           </div>
         ))}

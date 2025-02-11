@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LinkForm } from "./components/LinkForm"
 import { BackgroundSelector } from "./components/BackgroundSelector"
 import Preview from "./components/Preview"
+import { linktreeApi } from "@/services/api"
 
 
 interface Link {
@@ -23,6 +24,15 @@ export default function Page() {
   const removeLink = (id: string) => {
     setLinks(links.filter((link) => link.id !== id))
   }
+
+  useEffect(()=> {
+    async function fetchLinks() {
+      const { data } = await linktreeApi.get('/links/findByUserId/2692e0c1-a37a-4477-aa61-cc81b33a961f');
+      setLinks(data);     
+    }
+
+    fetchLinks()
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
