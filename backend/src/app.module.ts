@@ -4,11 +4,13 @@ import { UsersModule } from './users/users.module';
 
 import { DatabaseModule } from './database/database.module';
 import { JwtModule } from '@nestjs/jwt';
+import { LinksModule } from './links/links.module';
 
 @Module({
   imports: [
     DatabaseModule,
     UsersModule,
+    LinksModule,
     JwtModule.register({
       global: true,
       secret: 'test',
