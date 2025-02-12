@@ -5,14 +5,34 @@ import Link from "next/link"
 import { EllipsisIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+import {
+  Dialog,
+  DialogContent,
+
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { linktreeApi } from "@/services/api"
+import { Textarea } from "@/components/ui/textarea"
+
 
 export default function LinkTree() {
   const [links, setLinks] = useState([
     { id: 1, name: "Ata", link: "http://google.com", isActive: true },
-  ])
+  ]);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
 
   useEffect(()=> {
     async function fetchLinks(){
@@ -87,7 +107,18 @@ export default function LinkTree() {
           </div>
           <div className="ml-auto">
             <Button variant="ghost" size="icon">
-              <EllipsisIcon size={32}/>
+            <DropdownMenu>
+              <DropdownMenuTrigger><EllipsisIcon size={32}/></DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Edit image</DropdownMenuItem>                
+                <DropdownMenuItem onClick={()=> setIsEditProfileModalOpen(true)}>Edit display name and bio</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+ 
+              
             </Button>
           </div>
         </div>
@@ -134,6 +165,31 @@ export default function LinkTree() {
             </Card>
           ))}
         </div>
+
+        <Dialog open={isEditProfileModalOpen} onOpenChange={setIsEditProfileModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="flex flex-row items-center justify-between">
+              <DialogTitle>Display name and bio</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+          <label className="text-sm text-gray-500">Profile Title</label>
+          <Input defaultValue="@jaothelink" className="bg-gray-50 focus-visible:ring-purple-500" />
+              </div>
+              <div className="space-y-2">
+          <label className="text-sm text-gray-500">Bio</label>
+          <Textarea
+            className="min-h-[100px] bg-gray-50 focus-visible:ring-purple-500"
+            maxLength={80}
+          />
+          <div className="text-right text-sm text-gray-500">01 / 80</div>
+              </div>
+            </div>
+            <Button className="w-full bg-purple-600 hover:bg-purple-700">
+              Save
+            </Button>
+          </DialogContent>
+        </Dialog>
 
         <div className="mt-8 flex justify-end">
           <Button variant="ghost" size="sm">
