@@ -52,7 +52,10 @@ export default function LinkTree() {
     )
   }
 
-  const removeLink = (id: number) => {
+  const removeLink = async (id: number) => {
+    const {data} = await linktreeApi.delete(`/links/${id}`);
+    console.log(data);
+    
     setLinks(links.filter(link => link.id !== id))
   }
 

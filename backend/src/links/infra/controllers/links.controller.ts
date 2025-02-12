@@ -6,10 +6,12 @@ import {
   Request,
   Get,
   Put,
+  Delete,
 } from '@nestjs/common';
 
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateLinkUseCase } from 'src/links/app/use-cases/create-link';
+import { DeleteLinkUseCase } from 'src/links/app/use-cases/delete-link';
 import { FindLinksByUserIdUseCase } from 'src/links/app/use-cases/find-links-by-user-id';
 import { FindLinksByUsernameUseCase } from 'src/links/app/use-cases/find-links-by-username';
 import { UpdateLinkUseCase } from 'src/links/app/use-cases/update-link';
@@ -23,7 +25,8 @@ export class LinksController {
     private readonly createLinkUseCase: CreateLinkUseCase,
     private readonly findLinksByUsername: FindLinksByUsernameUseCase,
     private readonly findLinksByUserId: FindLinksByUserIdUseCase,
-    private readonly updateLinkUseCase: UpdateLinkUseCase
+    private readonly updateLinkUseCase: UpdateLinkUseCase,
+    private readonly deleteLinkUseCase: DeleteLinkUseCase,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -51,6 +54,13 @@ export class LinksController {
   @Put('/')
   updateLink(@Body() body: UpdateLinkDto) {
     return this.updateLinkUseCase.execute(body);
+  }
+
+  @Delete('/:id')
+  deleteLink(@Request() req) {
+    const { id } = req.params;
+
+    return this.deleteLinkUseCase.execute(id);
   }
 
 }

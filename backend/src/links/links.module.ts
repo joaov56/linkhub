@@ -8,6 +8,7 @@ import { CreateLinkUseCase } from './app/use-cases/create-link';
 import { FindLinksByUsernameUseCase } from './app/use-cases/find-links-by-username';
 import { FindLinksByUserIdUseCase } from './app/use-cases/find-links-by-user-id';
 import { UpdateLinkUseCase } from './app/use-cases/update-link';
+import { DeleteLinkUseCase } from './app/use-cases/delete-link';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Link])],
@@ -16,7 +17,8 @@ import { UpdateLinkUseCase } from './app/use-cases/update-link';
     CreateLinkUseCase,
     FindLinksByUserIdUseCase,
     FindLinksByUsernameUseCase,
-    UpdateLinkUseCase
+    UpdateLinkUseCase,
+    DeleteLinkUseCase
   ],
 })
 export class LinksModule {}
