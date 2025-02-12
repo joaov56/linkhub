@@ -13,13 +13,13 @@ export class Link {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({nullable: true})
   name: string;
 
-  @Column()
+  @Column({nullable: true})
   link: string;
 
-  @Column()
+  @Column({nullable: true})
   icon: string;
 
   @ManyToOne(() => User, { nullable: false })

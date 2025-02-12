@@ -5,13 +5,16 @@ import {
   UseGuards,
   Request,
   Get,
+  Put,
 } from '@nestjs/common';
 
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateLinkUseCase } from 'src/links/app/use-cases/create-link';
 import { FindLinksByUserIdUseCase } from 'src/links/app/use-cases/find-links-by-user-id';
 import { FindLinksByUsernameUseCase } from 'src/links/app/use-cases/find-links-by-username';
+import { UpdateLinkUseCase } from 'src/links/app/use-cases/update-link';
 import { CreateLinkDto } from 'src/links/dto/create-link.dto';
+import { UpdateLinkDto } from 'src/links/dto/update-link.dto';
 
 
 @Controller('links')
@@ -20,6 +23,7 @@ export class LinksController {
     private readonly createLinkUseCase: CreateLinkUseCase,
     private readonly findLinksByUsername: FindLinksByUsernameUseCase,
     private readonly findLinksByUserId: FindLinksByUserIdUseCase,
+    private readonly updateLinkUseCase: UpdateLinkUseCase
   ) {}
 
   @UseGuards(AuthGuard)
@@ -43,4 +47,10 @@ export class LinksController {
 
     return this.findLinksByUserId.execute(id);
   }
+
+  @Put('/')
+  updateLink(@Body() body: UpdateLinkDto) {
+    return this.updateLinkUseCase.execute(body);
+  }
+
 }
