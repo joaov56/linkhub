@@ -11,6 +11,9 @@ export class User {
   @Column()
   username: string;
 
+  @Column({nullable: true})
+  bio: string;
+
   @Column()
   password: string;
 

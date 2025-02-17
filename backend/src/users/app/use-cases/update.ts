@@ -12,6 +12,14 @@ export class UpdateUserUseCase {
   ) {}
 
   async execute(id: string, updateUserDto: UpdateUserDto) {
+    if(updateUserDto.username){
+      const user = await this.usersRepository.findOne({where :{
+        username: updateUserDto.username
+      }});
+      if(user){
+        throw new Error('Username already exists');
+      } 
+    } 
     return this.usersRepository.update(id, updateUserDto);
   }
 }

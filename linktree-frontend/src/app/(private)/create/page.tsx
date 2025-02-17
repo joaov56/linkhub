@@ -32,6 +32,10 @@ export default function LinkTree() {
   const [links, setLinks] = useState([
     { id: 1, name: "Ata", link: "http://google.com", isActive: true },
   ]);
+  const [userInfo, setUserInfo] = useState<{username: string; bio: string;}>({
+    username: "jaothelink",
+    bio: "teste",
+  })
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
 
   useEffect(()=> {
@@ -77,6 +81,14 @@ export default function LinkTree() {
     console.log(data);
     
     setLinks(links.filter(link => link.id !== id))
+  }
+
+  const updateUserInfo = async ()=> {
+    const { status } = await linktreeApi.patch('/users/2692e0c1-a37a-4477-aa61-cc81b33a961f', userInfo)
+
+    if(status === 200){
+      setIsEditProfileModalOpen(false)
+    }
   }
 
   useEffect(()=> {
@@ -174,18 +186,25 @@ export default function LinkTree() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
           <label className="text-sm text-gray-500">Profile Title</label>
-          <Input defaultValue="@jaothelink" className="bg-gray-50 focus-visible:ring-purple-500" />
+          <Input defaultValue="@jaothelink" className="bg-gray-50 focus-visible:ring-purple-500" onChange={(e)=> setUserInfo({
+            ...userInfo,
+            username: e.target.value as string
+          })}/>
               </div>
               <div className="space-y-2">
           <label className="text-sm text-gray-500">Bio</label>
           <Textarea
             className="min-h-[100px] bg-gray-50 focus-visible:ring-purple-500"
             maxLength={80}
+            onChange={(e)=> setUserInfo({
+              ...userInfo,
+              bio: e.target.value as string
+            })}
           />
           <div className="text-right text-sm text-gray-500">01 / 80</div>
               </div>
             </div>
-            <Button className="w-full bg-purple-600 hover:bg-purple-700">
+            <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={updateUserInfo}>
               Save
             </Button>
           </DialogContent>
