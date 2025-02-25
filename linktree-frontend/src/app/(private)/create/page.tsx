@@ -14,44 +14,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import {
-  Dialog,
-  DialogContent,
-
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { linktreeApi } from "@/services/api"
 import { Textarea } from "@/components/ui/textarea"
-
+import { BackgroundSelector } from "./components/BackgroundSelector"
 
 export default function LinkTree() {
-  const [links, setLinks] = useState([
-    { id: 1, name: "Ata", link: "http://google.com", isActive: true },
-  ]);
-  const [userInfo, setUserInfo] = useState<{username: string; bio: string;}>({
+  const [links, setLinks] = useState([{ id: 1, name: "Ata", link: "http://google.com", isActive: true }])
+  const [userInfo, setUserInfo] = useState<{ username: string; bio: string }>({
     username: "jaothelink",
     bio: "teste",
   })
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false)
+  const [background, setBackground] = useState("bg-gray-50")
 
-  useEffect(()=> {
-    async function fetchLinks(){
-      const {data} = await linktreeApi.get("/links/findByUserId/2692e0c1-a37a-4477-aa61-cc81b33a961f");
+  useEffect(() => {
+    async function fetchLinks() {
+      const { data } = await linktreeApi.get("/links/findByUserId/2692e0c1-a37a-4477-aa61-cc81b33a961f")
       setLinks(data)
     }
 
     fetchLinks()
-  },[])
+  }, [])
 
   const addLink = async () => {
-    const {data} = await linktreeApi.post("/links", {
-      title:"",
-      link:"",
-      icon:""
+    const { data } = await linktreeApi.post("/links", {
+      title: "",
+      link: "",
+      icon: "",
     })
     const newLink = {
       id: data.id,
@@ -63,40 +56,36 @@ export default function LinkTree() {
   }
 
   const updateLink = async (id: number, field: "name" | "link" | "isActive", value: string | boolean) => {
-    const { status } = await linktreeApi.put('/links', {
+    const { status } = await linktreeApi.put("/links", {
       id: id,
-      [field]: value
+      [field]: value,
     })
 
-    if(status !== 200) return; 
-    setLinks(
-      links.map(link =>
-        link.id === id ? { ...link, [field]: value } : link
-      )
-    )
+    if (status !== 200) return
+    setLinks(links.map((link) => (link.id === id ? { ...link, [field]: value } : link)))
   }
 
   const removeLink = async (id: number) => {
-    const {data} = await linktreeApi.delete(`/links/${id}`);
-    console.log(data);
-    
-    setLinks(links.filter(link => link.id !== id))
+    const { data } = await linktreeApi.delete(`/links/${id}`)
+    console.log(data)
+
+    setLinks(links.filter((link) => link.id !== id))
   }
 
-  const updateUserInfo = async ()=> {
-    const { status } = await linktreeApi.patch('/users/2692e0c1-a37a-4477-aa61-cc81b33a961f', userInfo)
+  const updateUserInfo = async () => {
+    const { status } = await linktreeApi.patch("/users/2692e0c1-a37a-4477-aa61-cc81b33a961f", userInfo)
 
-    if(status === 200){
+    if (status === 200) {
       setIsEditProfileModalOpen(false)
     }
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     console.log(links)
-  },[links])
+  }, [links])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className={`min-h-screen p-4 ${background} bg-fixed`}>
       <div className="mx-auto max-w-2xl">
         <header className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -119,49 +108,46 @@ export default function LinkTree() {
           </div>
           <div className="ml-auto">
             <Button variant="ghost" size="icon">
-            <DropdownMenu>
-              <DropdownMenuTrigger><EllipsisIcon size={32}/></DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Edit image</DropdownMenuItem>                
-                <DropdownMenuItem onClick={()=> setIsEditProfileModalOpen(true)}>Edit display name and bio</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
- 
-              
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <EllipsisIcon size={32} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Edit image</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsEditProfileModalOpen(true)}>
+                    Edit display name and bio
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </Button>
           </div>
         </div>
 
-        <Button
-          className="mb-6 w-full bg-purple-600 hover:bg-purple-700"
-          size="lg"
-          onClick={addLink}
-        >
+        <Button className="mb-6 w-full bg-purple-600 hover:bg-purple-700" size="lg" onClick={addLink}>
           <span className="mr-2">+</span> Add
         </Button>
 
         <div className="space-y-4">
-          {links.map(link => (
+          {links.map((link) => (
             <Card key={link.id}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-4">
                   <Input
                     value={link.name}
-                    onChange={e => updateLink(link.id, "name", e.target.value)}
+                    onChange={(e) => updateLink(link.id, "name", e.target.value)}
                     placeholder="Title"
                     className="text-lg font-medium w-[90%]"
                   />
                   <Switch
                     checked={link.isActive}
-                    onCheckedChange={checked => updateLink(link.id, "isActive", checked)}
+                    onCheckedChange={(checked) => updateLink(link.id, "isActive", checked)}
                   />
                 </div>
                 <Input
                   value={link.link}
-                  onChange={e => updateLink(link.id, "link", e.target.value)}
+                  onChange={(e) => updateLink(link.id, "link", e.target.value)}
                   placeholder="URL"
                   className="text-sm text-gray-600"
                 />
@@ -185,23 +171,31 @@ export default function LinkTree() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-          <label className="text-sm text-gray-500">Profile Title</label>
-          <Input defaultValue="@jaothelink" className="bg-gray-50 focus-visible:ring-purple-500" onChange={(e)=> setUserInfo({
-            ...userInfo,
-            username: e.target.value as string
-          })}/>
+                <label className="text-sm text-gray-500">Profile Title</label>
+                <Input
+                  defaultValue="@jaothelink"
+                  className="bg-gray-50 focus-visible:ring-purple-500"
+                  onChange={(e) =>
+                    setUserInfo({
+                      ...userInfo,
+                      username: e.target.value as string,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
-          <label className="text-sm text-gray-500">Bio</label>
-          <Textarea
-            className="min-h-[100px] bg-gray-50 focus-visible:ring-purple-500"
-            maxLength={80}
-            onChange={(e)=> setUserInfo({
-              ...userInfo,
-              bio: e.target.value as string
-            })}
-          />
-          <div className="text-right text-sm text-gray-500">01 / 80</div>
+                <label className="text-sm text-gray-500">Bio</label>
+                <Textarea
+                  className="min-h-[100px] bg-gray-50 focus-visible:ring-purple-500"
+                  maxLength={80}
+                  onChange={(e) =>
+                    setUserInfo({
+                      ...userInfo,
+                      bio: e.target.value as string,
+                    })
+                  }
+                />
+                <div className="text-right text-sm text-gray-500">01 / 80</div>
               </div>
             </div>
             <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={updateUserInfo}>
@@ -209,6 +203,8 @@ export default function LinkTree() {
             </Button>
           </DialogContent>
         </Dialog>
+
+        <BackgroundSelector setBackground={setBackground} />
 
         <div className="mt-8 flex justify-end">
           <Button variant="ghost" size="sm">
@@ -219,3 +215,4 @@ export default function LinkTree() {
     </div>
   )
 }
+
