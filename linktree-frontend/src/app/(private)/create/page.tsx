@@ -28,8 +28,8 @@ export default function LinkTree() {
     username: "jaothelink",
     bio: "teste",
   })
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false)
-  const [background, setBackground] = useState("bg-gray-50")
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [background, setBackground] = useState("bg-gray-50");
 
   useEffect(() => {
     async function fetchLinks() {
