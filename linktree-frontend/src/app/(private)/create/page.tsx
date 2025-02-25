@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { EllipsisIcon } from "lucide-react"
+import { EllipsisIcon, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -85,8 +85,8 @@ export default function LinkTree() {
   }, [links])
 
   return (
-    <div className={`min-h-screen p-4 ${background} bg-fixed`}>
-      <div className="mx-auto max-w-2xl">
+    <div className={`min-h-screen p-4 bg-fixed flex justify-between w-full`}>
+      <div className="ml-4 w-1/2">
         <header className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-orange-500">🔥</span>
@@ -212,7 +212,31 @@ export default function LinkTree() {
           </Button>
         </div>
       </div>
+
+      <div className="ml-64 w-1/2 mx-auto">
+      <p>Preview</p>
+
+      <div className={`h-[75%] w-[60%] ${background}`}>
+        <div className="flex items-center justify-center h-full">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative h-20 w-20 overflow-hidden rounded-full">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-yellow-400" />
+            </div>
+            <h2 className="font-semibold">@jaothelink</h2>
+            <p className="text-sm text-gray-500">teste</p>
+
+            {links.map((link) => (
+              <Card key={link.id} className="w-full mx-auto relative bg-white shadow-sm px-2">
+                <div className="flex items-center justify-between px-6 py-4 w-full">
+                  <h4 className="font-bold text-center flex-1">{link.name}</h4>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div> 
+      </div>
     </div>
+  </div>
   )
 }
 
